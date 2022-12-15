@@ -52,7 +52,7 @@ export interface ServiceDiscovery {
 
 let cachedServiceDiscovery: ServiceDiscovery | undefined;
 async function discoverService(hostname: string): Promise<ServiceDiscovery> {
-  if (cachedServiceDiscovery) return Promise.resolve(cachedServiceDiscovery);
+  if (cachedServiceDiscovery) return cachedServiceDiscovery;
 
   return new Promise<ServiceDiscovery>((resolve, reject) => {
     const req = https.request(

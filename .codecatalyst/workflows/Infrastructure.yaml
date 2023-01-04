@@ -1,0 +1,61 @@
+Name: Infrastructure
+SchemaVersion: "1.0"
+
+Triggers:
+  - Type: Push
+    Branches:
+      - dev
+
+Actions:
+
+  CDKBootstrapAction_f9:
+    # Identifies the action. Do not modify this value.
+    Identifier: aws/cdk-bootstrap@v1 # Specifies source to pass to the action as input.
+    Inputs:
+      Sources:
+        - WorkflowSource
+
+    # Specifies where received response should be saved
+    Outputs:
+      Artifacts:
+        - Name: cdk_bootstrap_artifacts
+          Files:
+            - cdk.out/*
+    # Defines the action's properties
+    Configuration:
+      # AWS region to bootstrap
+      Region: ap-northeast-2
+    Environment:
+      Connections:
+        - Role: "CodeCatalystPreviewDevelopmentAdministrator-1qf1jz"
+          Name: 657966192050
+      Name: Development
+
+  CDKDeploy_94:
+    # Identifies the action. Do not modify this value.
+    Identifier: aws/cdk-deploy@v1
+
+    DependsOn:
+      - CDKBootstrapAction_f9
+
+    Inputs:
+      Sources:
+        - WorkflowSource
+
+    Outputs:
+      Artifacts:
+        - Name: cdk_artifact
+          Files:
+            - cdk.out/*
+
+    Configuration:
+      # Name of the stack to deploy
+      StackName: web-applicationt7n3w-infra-stack
+      Region: ap-northeast-2
+      CfnOutputVariables: '["endpointURL"]'
+
+    Environment:
+      Connections:
+        - Role: "CodeCatalystPreviewDevelopmentAdministrator-1qf1jz"
+          Name: 657966192050
+      Name: Development
